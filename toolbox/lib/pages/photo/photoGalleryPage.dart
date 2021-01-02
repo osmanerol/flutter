@@ -59,7 +59,48 @@ class _PhotoGalleryState extends State<PhotoGalleryPage> {
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 5, crossAxisSpacing: 10, mainAxisSpacing: 10  ), 
               itemBuilder: (BuildContext context, int index) {
                 Photo photo=snapShot.data[index];
-                return Image.asset(photo.path);
+                return GestureDetector(
+                  onTap: () { 
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return Material(
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: <Widget>[
+                              Image.asset(photo.path,fit: BoxFit.fill),
+                              Align(
+                                alignment: Alignment.topRight,
+                                child: IconButton(
+                                  icon: Icon(Icons.cancel), 
+                                  onPressed: (){
+                                    Navigator.pop(context, true);
+                                  }
+                                ),
+                              ),
+                              Align(
+                                alignment: Alignment.bottomCenter,
+                                child: IconButton(
+                                  icon: Icon(
+                                    Icons.delete, 
+                                    size: 40, 
+                                    color: Colors.red
+                                  ), 
+                                  onPressed: (){
+                                    _dbHelper.removePhoto(photo.id);
+                                    setState(() { });
+                                    Navigator.pop(context, true);
+                                  }
+                                )
+                              )
+                            ],
+                          )
+                        );
+                      }
+                    );
+                   },
+                  child: Image.asset(photo.path)
+                );
               }
             );
           }
