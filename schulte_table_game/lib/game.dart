@@ -138,7 +138,7 @@ class _GameState extends State<Game>{
                                   },
                                 ),
                                 CupertinoDialogAction( 
-                                  child: Text('Yes'),
+                                  child: Text('Restart'),
                                   onPressed: (){
                                     restartGame();
                                     Navigator.pop(context);
