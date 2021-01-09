@@ -1,10 +1,10 @@
 import 'dart:io';
-
+import 'dart:convert';
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:toolbox/database/dbHelper.dart';
 import 'package:toolbox/models/photo.dart';
-
 
 class PhotoGalleryPage extends StatefulWidget {
   @override
@@ -14,7 +14,6 @@ class PhotoGalleryPage extends StatefulWidget {
 class _PhotoGalleryState extends State<PhotoGalleryPage> {
   DBHelper _dbHelper;
   final picker = ImagePicker();
-  File _image;
 
   @override
   void initState() {
@@ -23,16 +22,13 @@ class _PhotoGalleryState extends State<PhotoGalleryPage> {
   }
 
   Future  getFile() async{
-   final pickedFile = await picker.getImage(source: ImageSource.camera);
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path);
-        _dbHelper.insertPhoto(Photo(path: _image.path));
-        setState(() { });
-      } else {
-        print('No image selected.');
-      }
-    });
+   final selectedImage = await picker.getImage(source: ImageSource.camera);
+   if(selectedImage!=null){
+    final File file=File(selectedImage.path);
+    String image=base64Encode(file.readAsBytesSync());
+    await _dbHelper.insertPhoto(Photo(path: image));
+    setState(() { });
+   }
   }
 
   @override
@@ -40,20 +36,14 @@ class _PhotoGalleryState extends State<PhotoGalleryPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Photo Gallery'),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.camera_alt),
-            onPressed: getFile,
-          )
-        ],
       ),
       body: Padding(
         padding: EdgeInsets.all(10),
         child: FutureBuilder(
           future: _dbHelper.getPhotos(),
           builder: (BuildContext context,AsyncSnapshot snapShot){
-            if(!snapShot.hasData) return CircularProgressIndicator();
-            if(snapShot.data.isEmpty) return Text('Your contact list empty.');
+            if(!snapShot.hasData) return Center(child: CircularProgressIndicator(),);
+            if(snapShot.data.isEmpty) return Center(child: Text('Your photo gallery list empty.'),);
             return GridView.builder(
               itemCount: snapShot.data.length,
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 5, crossAxisSpacing: 10, mainAxisSpacing: 10  ), 
@@ -68,7 +58,7 @@ class _PhotoGalleryState extends State<PhotoGalleryPage> {
                           child: Stack(
                             alignment: Alignment.center,
                             children: <Widget>[
-                              Image.asset(photo.path,fit: BoxFit.fill),
+                              Image.memory(base64Decode(photo.path), fit: BoxFit.fill),
                               Align(
                                 alignment: Alignment.topRight,
                                 child: IconButton(
@@ -99,13 +89,17 @@ class _PhotoGalleryState extends State<PhotoGalleryPage> {
                       }
                     );
                    },
-                  child: Image.asset(photo.path)
+                  child: Image.memory(base64Decode(photo.path))
                 );
               }
             );
           }
         )
-      )
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add_a_photo),
+        onPressed: getFile,
+      ),
     );
   }
 }
