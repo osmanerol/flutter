@@ -15,13 +15,10 @@ dependencies:
   sqflite: ^1.0.0
   path_provider: ^1.6.27
   shared_preferences: ^0.5.12+4
-  cupertino_icons: ^1.0.0
-  dynamic_theme: ^1.0.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
 
 flutter:
 

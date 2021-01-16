@@ -1,28 +1,7 @@
-import 'dart:async';
-
-import 'package:dynamic_theme/dynamic_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:toolbox/pages/phone/phonePage.dart';
 import 'package:toolbox/pages/photo/photoGalleryPage.dart';
 import 'package:toolbox/pages/toDo/toDoPage.dart';
-import 'package:toolbox/pages/sideBar/sideBar.dart';
-import 'package:dynamic_theme/theme_switcher_widgets.dart';
-
-/*
-void main() {
-  runApp( MaterialApp(
-    theme: ThemeData.light(),
-    title: 'ToolBox',
-    initialRoute: '/',
-    routes: {
-      '/': (context)=> MyApp(),
-      '/phone_list': (context)=> PhonePage(),
-      '/photo': (context)=> PhotoGalleryPage(),
-      '/toDo': (context)=> ToDoPage(),
-    },
-  ));
-}
-*/
 
 void main() {
   runApp( MyApp() );
@@ -36,7 +15,7 @@ class MyApp extends StatefulWidget {
 
 
 class _MyAppState extends State<MyApp> {
-  var dark=true;
+  var dark=false;
 
   void changeTheme() {
     setState((){
@@ -101,7 +80,6 @@ class ListBox extends StatelessWidget{
   Widget build(BuildContext context){
     return GestureDetector(
       onTap: () {
-        // Navigator.pushNamed(context, path);
         Navigator.push(context, MaterialPageRoute(builder: (context)=> path));
       },
       child: Container(

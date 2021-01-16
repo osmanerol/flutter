@@ -40,8 +40,8 @@ class AddToDoForm extends StatelessWidget {
               onPressed: () async {
                 if(_formKey.currentState.validate()){
                   _formKey.currentState.save();
-                  var phone=ToDo(description: description);
-                  await dbHelper.insertToDo(phone);
+                  var todo=ToDo(description: description);
+                  await dbHelper.insertToDo(todo);
                   _controller.clear();
                   setState();
                 }
